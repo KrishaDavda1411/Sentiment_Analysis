@@ -4,10 +4,8 @@
 # 3. remove punctuation like .,?
 
 import string
-from nltk.corpus import  stopwords
 from collections import Counter
 from nltk.tokenize import word_tokenize
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import matplotlib.pyplot as plt
 
 text = open('read.txt',encoding='utf-8').read()
@@ -25,15 +23,24 @@ returns: returns the translation table which specifies the conversions that can 
 cleaned_text = lower_case.translate(str.maketrans('','',string.punctuation))
 # print(cleaned_text)
 
-tokenized_words = word_tokenize(cleaned_text,"english")
-#when read.txt is very big then .split take more time so we are using word_tokenize
+tokenized_words = cleaned_text.split()
 # print(tokenized_words)
 
 #stop words does not add any emotional meaning to stmt like i , was, that
+stop_words = ["i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "your", "yours", "yourself",
+              "yourselves", "he", "him", "his", "himself", "she", "her", "hers", "herself", "it", "its", "itself",
+              "they", "them", "their", "theirs", "themselves", "what", "which", "who", "whom", "this", "that", "these",
+              "those", "am", "is", "are", "was", "were", "be", "been", "being", "have", "has", "had", "having", "do",
+              "does", "did", "doing", "a", "an", "the", "and", "but", "if", "or", "because", "as", "until", "while",
+              "of", "at", "by", "for", "with", "about", "against", "between", "into", "through", "during", "before",
+              "after", "above", "below", "to", "from", "up", "down", "in", "out", "on", "off", "over", "under", "again",
+              "further", "then", "once", "here", "there", "when", "where", "why", "how", "all", "any", "both", "each",
+              "few", "more", "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than",
+              "too", "very", "s", "t", "can", "will", "just", "don", "should", "now"]
 
 final_words = []
 for i in tokenized_words:
-    if i not in stopwords.words('english'):
+    if i not in stop_words:
         final_words.append(i)
 # print(final_words)
 
@@ -51,21 +58,6 @@ print(emotion_list)
 
 w = Counter(emotion_list)
 print(w)
-
-def sentiment_analyze(sentiment_text):
-    score = SentimentIntensityAnalyzer().polarity_scores(sentiment_text)
-    neg = score['neg']
-    pos = score['pos']
-    if neg>pos:
-        print("negative sentiment")
-    elif pos>neg:
-        print("positive sentiment")
-    else:
-        print("neutral vibe")
-    # print(score)
-
-sentiment_analyze(cleaned_text)
-
 
 fig , ax1 = plt.subplots()
 ax1.bar(w.keys(),w.values())
